@@ -111,6 +111,38 @@ export default class DateTimeInput extends PureComponent {
       nextState.value = nextValue;
     }
 
+    nextState.minDateTimeString = '0000-01-01T00:00:00';
+    if (nextProps.minDate) {
+      if (nextProps.minDate instanceof Date) {
+        const year = `000${nextProps.minDate.getFullYear()}`.slice(-4);
+        const month = `0${nextProps.minDate.getMonth() + 1}`.slice(-2);
+        const day = `0${nextProps.minDate.getDate()}`.slice(-2);
+        const hour = `0${nextProps.minDate.getHours()}`.slice(-2);
+        const minute = `0${nextProps.minDate.getMinutes()}`.slice(-2);
+        const second = `0${nextProps.minDate.getSeconds()}`.slice(-2);
+        nextState.minDateTimeString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+      }
+      else {
+        nextState.minDateTimeString = nextProps.minDate;
+      }
+    }
+
+    nextState.maxDateTimeString = '9999-31-12T23:59:59';
+    if (nextProps.maxDate) {
+      if (nextProps.maxDate instanceof Date) {
+        const year = `000${nextProps.maxDate.getFullYear()}`.slice(-4);
+        const month = `0${nextProps.maxDate.getMonth() + 1}`.slice(-2);
+        const day = `0${nextProps.maxDate.getDate()}`.slice(-2);
+        const hour = `0${nextProps.maxDate.getHours()}`.slice(-2);
+        const minute = `0${nextProps.maxDate.getMinutes()}`.slice(-2);
+        const second = `0${nextProps.maxDate.getSeconds()}`.slice(-2);
+        nextState.maxDateTimeString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+      }
+      else {
+        nextState.maxDateTimeString = nextProps.maxDate;
+      }
+    }
+
     return nextState;
   }
 
@@ -123,6 +155,28 @@ export default class DateTimeInput extends PureComponent {
     minute: null,
     second: null,
   };
+
+  /**
+   * Gets current value in a desired format.
+   */
+  getProcessedValue(value) {
+    if (!value) {
+      return null;
+    }
+    const [valueDate, valueTime] = value.split('T');
+
+    const [yearString, monthString, dayString] = valueDate.split('-');
+    const year = parseInt(yearString, 10);
+    const monthIndex = parseInt(monthString, 10) - 1 || 0;
+    const date = parseInt(dayString, 10) || 1;
+
+    const [hourString, minuteString, secondString] = valueTime.split(':');
+    const hour = parseInt(hourString, 10) || 0;
+    const minute = parseInt(minuteString, 10) || 0;
+    const second = parseInt(secondString, 10) || 0;
+
+    return new Date(year, monthIndex, date, hour, minute, second);
+  }
 
   // eslint-disable-next-line class-methods-use-this
   get dateDivider() {
@@ -215,23 +269,16 @@ export default class DateTimeInput extends PureComponent {
   }
 
   get commonInputProps() {
-    const { maxTime, minTime } = this;
     const {
       className,
       disabled,
       isWidgetOpen,
-      maxDate,
-      minDate,
       required,
     } = this.props;
 
     return {
       className,
       disabled,
-      maxDate: maxDate || defaultMaxDate,
-      maxTime,
-      minDate: minDate || defaultMinDate,
-      minTime,
       onChange: this.onChange,
       onKeyDown: this.onKeyDown,
       placeholder: '--',
@@ -253,8 +300,59 @@ export default class DateTimeInput extends PureComponent {
     return maxDetail;
   }
 
+
+  isValidDateTime = (dateTimeString) => {
+    const { minDateTimeString, maxDateTimeString } = this.state;
+    return (Date.parse(dateTimeString) && dateTimeString >= minDateTimeString && dateTimeString <= maxDateTimeString);
+  }
+
   onKeyDown = (event) => {
+    let offset = null;
     switch (event.key) {
+      case 'ArrowUp': {
+        offset = 1;
+      }
+      case 'ArrowDown': {
+        event.preventDefault();
+        if (!offset) offset = -1;
+        const key = event.target.name;
+        const { year, month, day, hour, minute, second } = this.state;
+        let yearString = `000${year}`.slice(-4);
+        let monthString = `0${month}`.slice(-2);
+        let dayString = `0${day}`.slice(-2);
+        let hourString = `0${hour}`.slice(-2);
+        let minuteString = `0${minute}`.slice(-2);
+        let secondString = `0${second}`.slice(-2);
+        const nextValue = new Date(`${yearString}-${monthString}-${dayString}T${hourString}:${minuteString}:${secondString}`);
+
+        if (key === 'day') {
+          nextValue.setDate(nextValue.getDate() + offset);
+        }
+        else if (key === 'month') {
+          nextValue.setMonth(nextValue.getMonth() + offset);
+        }
+        else if (key === 'year') {
+          nextValue.setFullYear(nextValue.getFullYear() + offset);
+        }
+        else if (key === 'second') {
+          nextValue.setSeconds(nextValue.getSeconds() + offset);
+        }
+        else if (key === 'minute') {
+          nextValue.setMinutes(nextValue.getMinutes() + offset);
+        }
+        else if (key === 'hour12' || key === 'hour24') {
+          nextValue.setHours(nextValue.getHours() + offset);
+        }
+        yearString = `${nextValue.getFullYear()}`;
+        monthString = `0${nextValue.getMonth() + 1}`.slice(-2);
+        dayString = `0${nextValue.getDate()}`.slice(-2);
+        hourString = `0${nextValue.getHours()}`.slice(-2);
+        minuteString = `0${nextValue.getMinutes()}`.slice(-2);
+        secondString = `0${nextValue.getSeconds()}`.slice(-2);
+        const timeString = `${yearString}-${monthString}-${dayString}T${hourString}:${minuteString}:${secondString}`;
+        this.onChangeKeyEvent(timeString);
+        break;
+      }
       case 'ArrowLeft': {
         event.preventDefault();
 
@@ -320,25 +418,7 @@ export default class DateTimeInput extends PureComponent {
       return;
     }
 
-    const processedValue = (() => {
-      if (!value) {
-        return null;
-      }
-
-      const [valueDate, valueTime] = value.split('T');
-
-      const [yearString, monthString, dayString] = valueDate.split('-');
-      const year = parseInt(yearString, 10);
-      const monthIndex = parseInt(monthString, 10) - 1 || 0;
-      const date = parseInt(dayString, 10) || 1;
-
-      const [hourString, minuteString, secondString] = valueTime.split(':');
-      const hour = parseInt(hourString, 10) || 0;
-      const minute = parseInt(minuteString, 10) || 0;
-      const second = parseInt(secondString, 10) || 0;
-
-      return new Date(year, monthIndex, date, hour, minute, second);
-    })();
+    const processedValue = this.getProcessedValue(value);
 
     onChange(processedValue, false);
   }
@@ -350,6 +430,16 @@ export default class DateTimeInput extends PureComponent {
       ({ amPm: value }),
       this.onChangeExternal,
     );
+  }
+
+  onChangeKeyEvent = (proposedValue) => {
+    const { onChange } = this.props;
+
+    if (!onChange || !this.isValidDateTime(proposedValue)) {
+      return;
+    }
+    const processedValue = this.getProcessedValue(proposedValue);
+    return onChange(processedValue, false);
   }
 
   /**
@@ -375,6 +465,7 @@ export default class DateTimeInput extends PureComponent {
     ].filter(Boolean);
 
     const formElementsWithoutSelect = formElements.slice(0, -1);
+    const activeElement = formElementsWithoutSelect.find(el => document.activeElement === el);
 
     const values = {};
     formElements.forEach((formElement) => {
@@ -383,20 +474,25 @@ export default class DateTimeInput extends PureComponent {
 
     if (formElementsWithoutSelect.every(formElement => !formElement.value)) {
       onChange(null, false);
-    } else if (
-      formElements.every(formElement => formElement.value && formElement.checkValidity())
-    ) {
-      const hour = values.hour24 || convert12to24(values.hour12, values.amPm);
-      const proposedValue = new Date(
-        values.year,
-        (values.month || 1) - 1,
-        values.day || 1,
-        hour,
-        values.minute || 0,
-        values.second || 0,
-      );
-      const processedValue = proposedValue;
-      onChange(processedValue, false);
+    } else {
+      const year = `000${values.year || 0}`.slice(-4);
+      const month = `0${values.month || 1}`.slice(-2);
+      const day = `0${values.day || 1}`.slice(-2);
+      const hour = `0${values.hour24 || convert12to24(values.hour12, values.amPm)}`.slice(-2);
+      const minute = `0${values.minute || 0}`.slice(-2);
+      const second = `0${values.second || 0}`.slice(-2);
+      const dateTimeString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+      if (this.isValidDateTime(dateTimeString)) {
+        formElementsWithoutSelect.forEach(el => el.setCustomValidity(''));
+        const processedValue = this.getProcessedValue(dateTimeString);
+        onChange(processedValue, false);
+      }
+      else if (activeElement) {
+        activeElement.setCustomValidity('Invalid date');
+      }
+      else {
+        formElementsWithoutSelect.forEach(el => el.setCustomValidity('Invalid range'));
+      }
     }
   }
 
