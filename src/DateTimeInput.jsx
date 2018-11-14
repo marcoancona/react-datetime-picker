@@ -342,7 +342,7 @@ export default class DateTimeInput extends PureComponent {
           let value = nextValue.getMinutes() + (offset * stepMinute);
           // Now round to next `step` interval
           // eg. 31 to 35, 57 to 00
-          if (step > 1) {
+          if (stepMinute > 1) {
             value = (1 + Math.floor(value / stepMinute)) * stepMinute;
           }
           nextValue.setMinutes(value);
@@ -738,7 +738,7 @@ export default class DateTimeInput extends PureComponent {
 DateTimeInput.defaultProps = {
   maxDetail: 'minute',
   name: 'datetime',
-	stepMinute: 1,
+  stepMinute: 1,
 };
 
 DateTimeInput.propTypes = {
@@ -749,7 +749,7 @@ DateTimeInput.propTypes = {
   maxDate: isMaxDate,
   maxDetail: PropTypes.oneOf(allViews),
   minDate: isMinDate,
-	stepMinute: PropTypes.number,
+  stepMinute: PropTypes.number,
   name: PropTypes.string,
   onChange: PropTypes.func,
   required: PropTypes.bool,
