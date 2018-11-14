@@ -406,6 +406,7 @@ export default class DateTimeInput extends PureComponent {
         if (!previousInput && onPrevNavigation) onPrevNavigation();
         break;
       }
+      case 'Tab':
       case 'ArrowRight':
       case this.dateDivider:
       case this.timeDivider: {
