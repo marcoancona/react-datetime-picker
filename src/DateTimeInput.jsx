@@ -53,6 +53,7 @@ const findNextInput = (element) => {
   return nextElement.nextElementSibling; // Actual input
 };
 
+const focus = element => element && element.focus();
 
 const removeUnwantedCharacters = str => str
   .replace(/[年月日]/g, '/')
@@ -145,12 +146,22 @@ export default class DateTimeInput extends PureComponent {
     return nextState;
   }
 
-  focusOn(focusOn) {
-    this.focus(this[`${focusOn}Input`])
-  }
-
-  focus(element) {
-    if (element) element.focus();
+  focusOn(elName) {
+    if (elName === 'first' || elName === 'last') {
+      const allInputs = ['yearInput', 'monthInput', 'dayInput', 'hourInput', 'minuteInput', 'secondInput'];
+      const elementName = allInputs.find(el => !!this[el]);
+      if (elementName) {
+        let inputEl = this[elementName];
+        const findSibling = elName === 'first' ? findPreviousInput : findNextInput;
+        while (findSibling(inputEl)) {
+          inputEl = findSibling(inputEl);
+        }
+        focus(inputEl);
+      }
+    }
+    else {
+      focus(this[`${elName}Input`]);
+    }
   }
 
   state = {
@@ -371,7 +382,7 @@ export default class DateTimeInput extends PureComponent {
         const { onPrevNavigation } = this.props;
         const input = event.target;
         const previousInput = findPreviousInput(input);
-        this.focus(previousInput);
+        focus(previousInput);
         if (!previousInput && onPrevNavigation) onPrevNavigation();
         break;
       }
@@ -382,7 +393,7 @@ export default class DateTimeInput extends PureComponent {
         const { onNextNavigation } = this.props;
         const input = event.target;
         const nextInput = findNextInput(input);
-        this.focus(nextInput);
+        focus(nextInput);
         if (!nextInput && onNextNavigation) onNextNavigation();
         break;
       }
