@@ -11,7 +11,7 @@
     "clean": "rimraf dist",
     "copy-styles": "node ./copy-styles.js",
     "prepublishOnly": "yarn run clean && yarn run build",
-    "prepare": "yarn run clean && yarn run build",
+    "prepare": "npm run clean && npm run build-js && npm run copy-styles && npm run build-styles",
     "test": "yarn run test-eslint && yarn run test-jest",
     "test-eslint": "eslint src/ test/ --ext .jsx,.js",
     "test-jest": "jest",
@@ -50,9 +50,9 @@
     "prop-types": "^15.6.0",
     "react-calendar": "^2.17.4",
     "react-clock": "^2.3.0",
-    "react-date-picker": "git+https://github.com/marcoancona/react-date-picker.git#675d33bc9a7464287a69ae44b3089843176686fe",
+    "react-date-picker": "git+https://github.com/marcoancona/react-date-picker.git#master",
     "react-lifecycles-compat": "^3.0.4",
-    "react-time-picker": "git+https://github.com/marcoancona/react-time-picker.git"
+    "react-time-picker": "git+https://github.com/marcoancona/react-time-picker.git#master"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
