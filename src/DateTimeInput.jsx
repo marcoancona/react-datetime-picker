@@ -317,6 +317,7 @@ export default class DateTimeInput extends PureComponent {
         if (!offset) offset = -1;
         const key = event.target.name;
         const { year, month, day, hour, minute, second } = this.state;
+        const { stepMinute } = this.props;
         let yearString = `000${year}`.slice(-4);
         let monthString = `0${month}`.slice(-2);
         let dayString = `0${day}`.slice(-2);
@@ -338,7 +339,13 @@ export default class DateTimeInput extends PureComponent {
           nextValue.setSeconds(nextValue.getSeconds() + offset);
         }
         else if (key === 'minute') {
-          nextValue.setMinutes(nextValue.getMinutes() + offset);
+          let value = nextValue.getMinutes() + (offset * stepMinute);
+          // Now round to next `step` interval
+          // eg. 31 to 35, 57 to 00
+          if (step > 1) {
+            value = (1 + Math.floor(value / stepMinute)) * stepMinute;
+          }
+          nextValue.setMinutes(value);
         }
         else if (key === 'hour12' || key === 'hour24') {
           nextValue.setHours(nextValue.getHours() + offset);
@@ -731,6 +738,7 @@ export default class DateTimeInput extends PureComponent {
 DateTimeInput.defaultProps = {
   maxDetail: 'minute',
   name: 'datetime',
+	stepMinute: 1,
 };
 
 DateTimeInput.propTypes = {
@@ -741,6 +749,7 @@ DateTimeInput.propTypes = {
   maxDate: isMaxDate,
   maxDetail: PropTypes.oneOf(allViews),
   minDate: isMinDate,
+	stepMinute: PropTypes.number,
   name: PropTypes.string,
   onChange: PropTypes.func,
   required: PropTypes.bool,
