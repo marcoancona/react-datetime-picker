@@ -321,7 +321,27 @@ export default class DateTimeInput extends PureComponent {
 
   isValidDateTime = (dateTimeString) => {
     const { minDateTimeString, maxDateTimeString } = this.state;
-    return (Date.parse(dateTimeString) && dateTimeString >= minDateTimeString && dateTimeString <= maxDateTimeString);
+    const formElements = [
+      this.dayInput,
+      this.monthInput,
+      this.yearInput,
+      this.hour12Input,
+      this.hour24Input,
+      this.minuteInput,
+      this.secondInput,
+      this.amPmInput,
+    ].filter(Boolean);
+
+    const formElementsWithoutSelect = formElements.slice(0, -1);
+    const isValid = (Date.parse(dateTimeString) && dateTimeString >= minDateTimeString && dateTimeString <= maxDateTimeString);
+    if (isValid) {
+      formElementsWithoutSelect.forEach(el => el.setCustomValidity(''));
+      return true;
+    }
+    else {
+      formElementsWithoutSelect.forEach(el => el.setCustomValidity('Invalid range'));
+      return false;
+    }
   }
 
   onKeyDown = (event) => {
@@ -465,7 +485,7 @@ export default class DateTimeInput extends PureComponent {
       return;
     }
     const processedValue = this.getProcessedValue(proposedValue);
-    return onChange(processedValue, false);
+    onChange(processedValue, false);
   }
 
   /**
@@ -491,7 +511,6 @@ export default class DateTimeInput extends PureComponent {
     ].filter(Boolean);
 
     const formElementsWithoutSelect = formElements.slice(0, -1);
-    const activeElement = formElementsWithoutSelect.find(el => document.activeElement === el);
 
     const values = {};
     formElements.forEach((formElement) => {
@@ -509,12 +528,8 @@ export default class DateTimeInput extends PureComponent {
       const second = `0${values.second || 0}`.slice(-2);
       const dateTimeString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
       if (this.isValidDateTime(dateTimeString)) {
-        formElementsWithoutSelect.forEach(el => el.setCustomValidity(''));
         const processedValue = this.getProcessedValue(dateTimeString);
         onChange(processedValue, false);
-      }
-      else if (activeElement) {
-        activeElement.setCustomValidity('Invalid date');
       }
       else {
         formElementsWithoutSelect.forEach(el => el.setCustomValidity('Invalid range'));
