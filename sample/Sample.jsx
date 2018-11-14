@@ -7,9 +7,18 @@ import './Sample.less';
 export default class Sample extends Component {
   state = {
     value: new Date(),
+    focusOn: 'month',
   }
 
-  onChange = value => this.setState({ value })
+  inputRef = React.createRef()
+
+  onChange = value => {
+    this.setState({ value })
+  }
+
+  componentDidMount() {
+    this.inputRef.current.focusOn('month')
+  }
 
   render() {
     const { value } = this.state;
@@ -22,8 +31,13 @@ export default class Sample extends Component {
         <div className="Sample__container">
           <main className="Sample__container__content">
             <DateTimePicker
+              ref={this.inputRef}
               onChange={this.onChange}
               value={value}
+              minDate={new Date()}
+              stepMinute={5}
+              onNextNavigation={() => this.inputRef.current.focusOn('first')}
+              onPrevNavigation={() => this.inputRef.current.focusOn('last')}
             />
           </main>
         </div>
