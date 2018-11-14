@@ -53,7 +53,6 @@ const findNextInput = (element) => {
   return nextElement.nextElementSibling; // Actual input
 };
 
-const focus = element => element && element.focus();
 
 const removeUnwantedCharacters = str => str
   .replace(/[年月日]/g, '/')
@@ -144,6 +143,14 @@ export default class DateTimeInput extends PureComponent {
     }
 
     return nextState;
+  }
+
+  focusOn(focusOn) {
+    this.focus(this[`${focusOn}Input`])
+  }
+
+  focus(element) {
+    if (element) element.focus();
   }
 
   state = {
@@ -340,10 +347,9 @@ export default class DateTimeInput extends PureComponent {
         }
         else if (key === 'minute') {
           let value = nextValue.getMinutes() + (offset * stepMinute);
-          // Now round to next `step` interval
-          // eg. 31 to 35, 57 to 00
+          // Now round to next `step` interval (eg. 31 to 35, 57 to 00)
           if (stepMinute > 1) {
-            value = (1 + Math.floor(value / stepMinute)) * stepMinute;
+            value = Math.floor(value / stepMinute) * stepMinute;
           }
           nextValue.setMinutes(value);
         }
@@ -362,20 +368,22 @@ export default class DateTimeInput extends PureComponent {
       }
       case 'ArrowLeft': {
         event.preventDefault();
-
+        const { onPrevNavigation } = this.props;
         const input = event.target;
         const previousInput = findPreviousInput(input);
-        focus(previousInput);
+        this.focus(previousInput);
+        if (!previousInput && onPrevNavigation) onPrevNavigation();
         break;
       }
       case 'ArrowRight':
       case this.dateDivider:
       case this.timeDivider: {
         event.preventDefault();
-
+        const { onNextNavigation } = this.props;
         const input = event.target;
         const nextInput = findNextInput(input);
-        focus(nextInput);
+        this.focus(nextInput);
+        if (!nextInput && onNextNavigation) onNextNavigation();
         break;
       }
       default:
@@ -749,11 +757,13 @@ DateTimeInput.propTypes = {
   maxDate: isMaxDate,
   maxDetail: PropTypes.oneOf(allViews),
   minDate: isMinDate,
-  stepMinute: PropTypes.number,
   name: PropTypes.string,
   onChange: PropTypes.func,
+  onPrevNavigation: PropTypes.func,
+  onNextNavigation: PropTypes.func,
   required: PropTypes.bool,
   showLeadingZeros: PropTypes.bool,
+  stepMinute: PropTypes.number,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(Date),

@@ -33,6 +33,7 @@ export default class DateTimePicker extends PureComponent {
   }
 
   state = {};
+  inputRef = React.createRef();
 
   get eventProps() {
     return makeEventProps(this.props);
@@ -128,6 +129,10 @@ export default class DateTimePicker extends PureComponent {
     });
   }
 
+  focusOn = (elementName) => {
+    if (this.inputRef.current) this.inputRef.current.focusOn(elementName);
+  }
+
   toggleCalendar = () => {
     this.setState(prevState => ({
       isCalendarOpen: !prevState.isCalendarOpen,
@@ -162,8 +167,11 @@ export default class DateTimePicker extends PureComponent {
       maxDate,
       minDate,
       name,
+      onPrevNavigation,
+      onNextNavigation,
       required,
       showLeadingZeros,
+      stepMinute,
       value,
     } = this.props;
 
@@ -181,10 +189,14 @@ export default class DateTimePicker extends PureComponent {
           minDate={minDate}
           name={name}
           onChange={this.onTimeChange}
+          onPrevNavigation={onPrevNavigation}
+          onNextNavigation={onNextNavigation}
           placeholder={this.placeholder}
           required={required}
           showLeadingZeros={showLeadingZeros}
+          stepMinute={stepMinute}
           value={value}
+          ref={this.inputRef}
         />
         {clearIcon !== null && (
           <button
@@ -402,8 +414,11 @@ DateTimePicker.propTypes = {
   minDate: isMinDate,
   name: PropTypes.string,
   onChange: PropTypes.func,
+  onPrevNavigation: PropTypes.func,
+  onNextNavigation: PropTypes.func,
   required: PropTypes.bool,
   showLeadingZeros: PropTypes.bool,
+  stepMinute: PropTypes.number,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(Date),
