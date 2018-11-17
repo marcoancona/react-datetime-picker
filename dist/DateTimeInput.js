@@ -227,6 +227,7 @@ var DateTimeInput = function (_PureComponent) {
             if (!previousInput && onPrevNavigation) onPrevNavigation();
             break;
           }
+        case 'Tab':
         case 'ArrowRight':
         case _this.dateDivider:
         case _this.timeDivider:
@@ -293,7 +294,7 @@ var DateTimeInput = function (_PureComponent) {
         return;
       }
       var processedValue = _this.getProcessedValue(proposedValue);
-      return onChange(processedValue, false);
+      onChange(processedValue, false);
     }, _this.onChangeExternal = function () {
       var onChange = _this.props.onChange;
 

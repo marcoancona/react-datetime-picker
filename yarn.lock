@@ -4481,9 +4481,9 @@ react-clock@^2.3.0:
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
 
-"react-date-picker@git+https://github.com/marcoancona/react-date-picker.git#master":
-  version "7.0.0"
-  resolved "git+https://github.com/marcoancona/react-date-picker.git#675d33bc9a7464287a69ae44b3089843176686fe"
+"react-date-picker@git+https://github.com/marcoancona/react-date-picker.git#a1a0221b82cdf5f9b002ed61cce23aff5d56547e":
+  version "7.0.1"
+  resolved "git+https://github.com/marcoancona/react-date-picker.git#a1a0221b82cdf5f9b002ed61cce23aff5d56547e"
   dependencies:
     detect-element-overflow "^1.1.1"
     get-user-locale "^1.1.1"
@@ -4538,9 +4538,9 @@ react-test-renderer@^16.5.0:
     react-is "^16.5.0"
     schedule "^0.3.0"
 
-"react-time-picker@git+https://github.com/marcoancona/react-time-picker.git#master":
-  version "3.0.0"
-  resolved "git+https://github.com/marcoancona/react-time-picker.git#980ba8913f35b3731ebc391ea2d37414cf4ac2c5"
+"react-time-picker@git+https://github.com/marcoancona/react-time-picker.git#18187a03dde8d2bcc8731dd100eb216aebcfd828":
+  version "3.0.1"
+  resolved "git+https://github.com/marcoancona/react-time-picker.git#18187a03dde8d2bcc8731dd100eb216aebcfd828"
   dependencies:
     detect-element-overflow "^1.1.1"
     get-user-locale "^1.1.1"
