@@ -198,52 +198,34 @@ export default class DateTimeInput extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   get dateDivider() {
-    const { locale } = this.props;
-    const date = new Date(2017, 11, 11);
-
-    return (
-      removeUnwantedCharacters(formatDate(date, locale))
-        .match(/[^0-9]/)[0]
-    );
+    return "/";
   }
 
   // eslint-disable-next-line class-methods-use-this
   get timeDivider() {
-    const { locale } = this.props;
-    const date = new Date(2017, 0, 1, 21, 12, 13);
-
-    return (
-      removeUnwantedCharacters(formatTime(date, locale))
-        .match(/[^0-9]/)[0]
-    );
+    return ":";
   }
 
   // eslint-disable-next-line class-methods-use-this
   get datePlaceholder() {
     const { locale } = this.props;
-    const date = new Date(2017, 11, 11);
-
-    return (
-      removeUnwantedCharacters(formatDate(date, locale))
-        .replace('2017', 'year')
-        .replace('12', 'month')
-        .replace('11', 'day')
-    );
+    if (locale === "en-US") {
+      return "month/day/year"
+    }
+    else {
+      return "day/month/year"
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
   get timePlaceholder() {
     const { locale } = this.props;
-    const date = new Date(2017, 0, 1, 21, 13, 14);
-
-    return (
-      removeUnwantedCharacters(formatTime(date, locale))
-        .replace('21', 'hour-24')
-        .replace('9', 'hour-12')
-        .replace('13', 'minute')
-        .replace('14', 'second')
-        .replace(/AM|PM/i, `${this.timeDivider}ampm`)
-    );
+    if (locale === "en-US") {
+      return "hour-12:minute:second :ampm"
+    }
+    else {
+      return "hour-24:minute:second"
+    }
   }
 
   get maxTime() {

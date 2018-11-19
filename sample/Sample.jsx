@@ -35,6 +35,7 @@ export default class Sample extends Component {
               onChange={this.onChange}
               value={value}
               minDate={new Date()}
+              locale="en-US"
               stepMinute={5}
               onNextNavigation={() => this.inputRef.current.focusOn('first')}
               onPrevNavigation={() => this.inputRef.current.focusOn('last')}
