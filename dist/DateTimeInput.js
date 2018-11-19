@@ -661,11 +661,7 @@ var DateTimeInput = function (_PureComponent) {
   }, {
     key: 'dateDivider',
     get: function get() {
-      var locale = this.props.locale;
-
-      var date = new Date(2017, 11, 11);
-
-      return removeUnwantedCharacters((0, _dateFormatter.formatDate)(date, locale)).match(/[^0-9]/)[0];
+      return '/';
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -673,11 +669,7 @@ var DateTimeInput = function (_PureComponent) {
   }, {
     key: 'timeDivider',
     get: function get() {
-      var locale = this.props.locale;
-
-      var date = new Date(2017, 0, 1, 21, 12, 13);
-
-      return removeUnwantedCharacters((0, _dateFormatter.formatTime)(date, locale)).match(/[^0-9]/)[0];
+      return ':';
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -687,9 +679,10 @@ var DateTimeInput = function (_PureComponent) {
     get: function get() {
       var locale = this.props.locale;
 
-      var date = new Date(2017, 11, 11);
-
-      return removeUnwantedCharacters((0, _dateFormatter.formatDate)(date, locale)).replace('2017', 'year').replace('12', 'month').replace('11', 'day');
+      if (locale === 'en-US') {
+        return 'month/day/year';
+      }
+      return 'day/month/year';
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -699,9 +692,10 @@ var DateTimeInput = function (_PureComponent) {
     get: function get() {
       var locale = this.props.locale;
 
-      var date = new Date(2017, 0, 1, 21, 13, 14);
-
-      return removeUnwantedCharacters((0, _dateFormatter.formatTime)(date, locale)).replace('21', 'hour-24').replace('9', 'hour-12').replace('13', 'minute').replace('14', 'second').replace(/AM|PM/i, this.timeDivider + 'ampm');
+      if (locale === 'en-US') {
+        return 'hour-12:minute:second :ampm';
+      }
+      return 'hour-24:minute:second';
     }
   }, {
     key: 'maxTime',

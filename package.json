@@ -49,9 +49,9 @@
     "prop-types": "^15.6.0",
     "react-calendar": "^2.17.4",
     "react-clock": "^2.3.0",
-    "react-date-picker": "git+https://github.com/marcoancona/react-date-picker.git#a1a0221b82cdf5f9b002ed61cce23aff5d56547e",
+    "react-date-picker": "git+https://github.com/marcoancona/react-date-picker.git#5912e842ed03e3e080de35e8037e01e7a1ee7d69",
     "react-lifecycles-compat": "^3.0.4",
-    "react-time-picker": "git+https://github.com/marcoancona/react-time-picker.git#18187a03dde8d2bcc8731dd100eb216aebcfd828"
+    "react-time-picker": "git+https://github.com/marcoancona/react-time-picker.git#2eed64157f344de6928c62372968f91731a61655"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

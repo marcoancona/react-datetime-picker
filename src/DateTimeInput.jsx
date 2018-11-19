@@ -198,34 +198,30 @@ export default class DateTimeInput extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   get dateDivider() {
-    return "/";
+    return '/';
   }
 
   // eslint-disable-next-line class-methods-use-this
   get timeDivider() {
-    return ":";
+    return ':';
   }
 
   // eslint-disable-next-line class-methods-use-this
   get datePlaceholder() {
     const { locale } = this.props;
-    if (locale === "en-US") {
-      return "month/day/year"
+    if (locale === 'en-US') {
+      return 'month/day/year';
     }
-    else {
-      return "day/month/year"
-    }
+    return 'day/month/year';
   }
 
   // eslint-disable-next-line class-methods-use-this
   get timePlaceholder() {
     const { locale } = this.props;
-    if (locale === "en-US") {
-      return "hour-12:minute:second :ampm"
+    if (locale === 'en-US') {
+      return 'hour-12:minute:second :ampm';
     }
-    else {
-      return "hour-24:minute:second"
-    }
+    return 'hour-24:minute:second';
   }
 
   get maxTime() {
